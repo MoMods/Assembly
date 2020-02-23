@@ -5,8 +5,10 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class TagRefData : ValueField
 	{
 		private readonly TagHierarchy _allTags;
-		private readonly bool _withGroup;
+		private string _tagFileName;
+		private bool _withGroup;
 		private TagGroup _group;
+		private string _groupName;
 		private Visibility _showTagOptions;
 		private TagEntry _value;
 
@@ -49,14 +51,30 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		// store group name into tag to be used by serializer
+		public string GroupName
+		{
+			get { return _groupName; }
+			set { _groupName = value; }
+		}
+
+		// store withgroup value into tag to be used by serializer
 		public bool WithGroup
 		{
 			get { return _withGroup; }
+			set { _withGroup = value; }
 		}
 
 		public TagHierarchy Tags
 		{
 			get { return _allTags; }
+		}
+
+		// store tag name into tag to be used by serializer
+		public string TagFileName
+		{
+			get { return _tagFileName; }
+			set { _tagFileName = value; }
 		}
 
 		public bool CanJump

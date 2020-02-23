@@ -76,6 +76,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			}
 		}
 
+		public long DataAddressValue
+		{
+			get { return _dataAddress; }
+			set { _dataAddress = value; }
+		}
+
 		public string DataAddressHex
 		{
 			get { return "0x" + DataAddress.ToString("X"); }

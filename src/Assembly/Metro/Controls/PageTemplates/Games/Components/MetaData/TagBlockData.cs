@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Blamite.IO;
@@ -8,6 +9,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class TagBlockPage : PropertyChangeNotifier
 	{
 		private readonly MetaField[] _fields;
+		private MetaField[] _fieldValues;
 		private int _index;
 
 		public TagBlockPage(int index, int size)
@@ -25,10 +27,17 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				NotifyPropertyChanged("Index");
 			}
 		}
-
+		
 		public MetaField[] Fields
 		{
 			get { return _fields; }
+		}
+
+		// store field values into tag for use with serialization
+		public MetaField[] FieldValues
+		{
+			get { return _fieldValues; }
+			set { _fieldValues = value; }
 		}
 
 		public void CloneChanges(ObservableCollection<MetaField> changedFields, FieldChangeTracker tracker,
@@ -91,7 +100,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private const double MinWidth = 525; // The minimum width that a block can have
 		private readonly FileSegmentGroup _metaArea;
 		private readonly ObservableCollection<TagBlockPage> _pages = new ObservableCollection<TagBlockPage>();
-		private readonly ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();
+		private IList<TagBlockPage> _pageCollection = new List<TagBlockPage>();
+		private ObservableCollection<MetaField> _template = new ObservableCollection<MetaField>();
 		private int _currentIndex;
 		private uint _elementSize;
 		private bool _expanded;
@@ -194,9 +204,18 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 			get { return _pages; }
 		}
 
+		// store tagblock pages into tag to be used by serializer
+		public IList<TagBlockPage> PageCollection
+		{
+			get { return _pageCollection; }
+			set { _pageCollection = value; }
+		}
+
+		// store template into tag to be used by serializer
 		public ObservableCollection<MetaField> Template
 		{
 			get { return _template; }
+			set { _template = value; }
 		}
 
 		/// <summary>
