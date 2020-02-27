@@ -13,6 +13,11 @@ namespace Blamite.IO
 		private readonly int _baseSegmentDelta;
 		private readonly int _originalBaseSize;
 
+		// empty constructor to be used for serialization/deserialization
+		public SegmentPointer()
+		{
+		}
+
 		private SegmentPointer(FileSegment baseSegment, FileSegmentGroup baseGroup, int baseSegmentDelta)
 		{
 			_baseSegment = baseSegment;

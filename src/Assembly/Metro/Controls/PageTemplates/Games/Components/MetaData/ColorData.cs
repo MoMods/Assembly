@@ -11,6 +11,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private bool _alpha;
 		private Color _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public ColorData() : base()
+		{
+		}
+
 		public ColorData(string name, uint offset, long address, bool alpha, string dataType, Color value,
 			uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)

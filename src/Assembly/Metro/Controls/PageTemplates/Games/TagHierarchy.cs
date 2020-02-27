@@ -56,6 +56,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private string _tagGroupMagic = string.Empty;
 		private TagEntry _null = new TagEntry(null, null, "(null)");
 
+		// empty constructor to be used for serialization/deserialization
+		public TagGroup()
+		{
+		}
+
 		public TagGroup(ITagGroup baseGroup, string name, string description)
 		{
 			RawGroup = baseGroup;
@@ -129,6 +134,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 		private bool _isNull;
 
 		private string _tagToolTip = null;
+
+		// empty constructor to be used for serialization/deserialization
+		public TagEntry()
+		{
+		}
 
 		public TagEntry(ITag baseTag, string groupName, string name)
 		{

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using Blamite.IO;
+using Ceras;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -11,6 +12,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private readonly MetaField[] _fields;
 		private MetaField[] _fieldValues;
 		private int _index;
+
+		// empty constructor to be used for serialization/deserialization
+		public TagBlockPage()
+		{
+		}
 
 		public TagBlockPage(int index, int size)
 		{
@@ -108,6 +114,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private long _firstElementAddr;
 		private double _width = MinWidth;
 
+		// empty constructor to be used for serialization/deserialization
+		public TagBlockData() : base()
+		{
+		}
+
 		public TagBlockData(string name, uint offset, long address, uint elementSize, int align,
 			bool sort, uint pluginLine, string tooltip, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine, tooltip)
@@ -122,6 +133,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public double Width
 		{
 			get { return _width + 22; }
+			set { _width = value; } // set required to be included in serializer
 		}
 
 		public int Length
@@ -133,6 +145,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public int LastElementIndex
 		{
 			get { return _pages.Count - 1; }
+			private set { } // set required to be included in serializer
 		}
 
 		public uint ElementSize
@@ -202,6 +215,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		public ObservableCollection<TagBlockPage> Pages
 		{
 			get { return _pages; }
+			private set { } // set required to be included in serializer
 		}
 
 		// store tagblock pages into tag to be used by serializer

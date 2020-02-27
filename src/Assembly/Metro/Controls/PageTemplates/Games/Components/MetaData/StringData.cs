@@ -12,6 +12,11 @@
 		private StringType _type;
 		private string _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public StringData() : base()
+		{
+		}
+
 		public StringData(string name, uint offset, long address, StringType type, string value, int size, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{

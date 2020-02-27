@@ -20,6 +20,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private FlagsType _type;
 		private ulong _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public FlagData() : base()
+		{
+		}
+
 		public FlagData(string name, uint offset, long address, FlagsType type, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
@@ -112,6 +117,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 				_check = check;
 			}
 
+			// empty constructor to be used for serialization/deserialization
+			public QuickCheckCommand()
+			{
+			}
+
 			/// <summary>
 			///     Defines the method that determines whether the command can execute in its current state.
 			/// </summary>
@@ -159,6 +169,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _name;
 		private string _tooltip;
 		private int _index;
+
+		// empty constructor to be used for serialization/deserialization
+		public BitData()
+		{
+		}
 
 		public BitData(FlagData parent, string name, int index, string tooltip)
 		{

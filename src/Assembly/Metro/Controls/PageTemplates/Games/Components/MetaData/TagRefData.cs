@@ -12,6 +12,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private Visibility _showTagOptions;
 		private TagEntry _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public TagRefData() : base()
+		{
+		}
+
 		public TagRefData(string name, uint offset, long address, TagHierarchy allTags, Visibility showTagOptions, bool withGroup,
 			uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)

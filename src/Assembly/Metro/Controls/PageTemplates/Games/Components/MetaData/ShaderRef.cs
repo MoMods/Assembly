@@ -12,6 +12,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private IShader _shader;
 		private string _dbString;
 
+		// empty constructor to be used for serialization/deserialization
+		public ShaderRef() : base()
+		{
+		}
+
 		public ShaderRef(string name, uint offset, long address, ShaderType type, IShader value, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{

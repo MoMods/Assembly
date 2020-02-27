@@ -11,6 +11,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _type;
 		private T _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public NumberData() : base()
+		{
+		}
+
 		public NumberData(string name, uint offset, long address, string type, T value, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
@@ -44,6 +49,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint8Data : NumberData<byte>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Uint8Data() : base()
+		{
+		}
+
 		public Uint8Data(string name, uint offset, long address, string type, byte value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -65,6 +75,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int8Data : NumberData<sbyte>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Int8Data() : base()
+		{
+		}
+
 		public Int8Data(string name, uint offset, long address, string type, sbyte value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -86,6 +101,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint16Data : NumberData<ushort>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Uint16Data() : base()
+		{
+		}
+
 		public Uint16Data(string name, uint offset, long address, string type, ushort value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -107,6 +127,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int16Data : NumberData<short>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Int16Data() : base()
+		{
+		}
+
 		public Int16Data(string name, uint offset, long address, string type, short value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -128,6 +153,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint32Data : NumberData<uint>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Uint32Data() : base()
+		{
+		}
+
 		public Uint32Data(string name, uint offset, long address, string type, uint value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -149,6 +179,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int32Data : NumberData<int>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Int32Data() : base()
+		{
+		}
+
 		public Int32Data(string name, uint offset, long address, string type, int value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -170,6 +205,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Uint64Data : NumberData<ulong>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Uint64Data() : base()
+		{
+		}
+
 		public Uint64Data(string name, uint offset, long address, string type, ulong value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -191,6 +231,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Int64Data : NumberData<long>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Int64Data() : base()
+		{
+		}
+
 		public Int64Data(string name, uint offset, long address, string type, long value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -212,6 +257,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class Float32Data : NumberData<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Float32Data() : base()
+		{
+		}
+
 		public Float32Data(string name, uint offset, long address, string type, float value, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, value, pluginLine, tooltip)
 		{
@@ -234,6 +284,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	public class DegreeData : NumberData<float>
 	{
 		private float _radian;
+
+		// empty constructor to be used for serialization/deserialization
+		public DegreeData() : base()
+		{
+		}
 
 		public DegreeData(string name, uint offset, long address, string type, float radian, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, radian, pluginLine, tooltip)

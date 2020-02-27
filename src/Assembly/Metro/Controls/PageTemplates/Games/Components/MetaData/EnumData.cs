@@ -16,6 +16,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private EnumType _type;
 		private int _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public EnumData() : base()
+		{
+		}
+
 		public EnumData(string name, uint offset, long address, EnumType type, int value, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
@@ -87,6 +92,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _name;
 		private int _value;
 		private string _tooltip;
+
+		// empty constructor to be used for serialization/deserialization
+		public EnumValue()
+		{
+		}
 
 		public EnumValue(string name, int value, string tooltip)
 		{

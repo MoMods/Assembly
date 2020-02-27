@@ -4,6 +4,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 {
 	public class ThirdGenTagGroup : ITagGroup
 	{
+		// empty constructor to be used for serialization/deserialization
+		public ThirdGenTagGroup()
+		{
+		}
+
 		public ThirdGenTagGroup(StructureValueCollection values)
 		{
 			Load(values);

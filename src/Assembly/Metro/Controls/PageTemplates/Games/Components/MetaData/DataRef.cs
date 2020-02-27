@@ -4,6 +4,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	public class DataRef : RawData
 	{
+		// empty constructor to be used for serialization/deserialization
+		public DataRef() : base()
+		{
+		}
+
 		public DataRef(string name, uint offset, string format, long address, long dataAddress, string value, int length,
 			uint pluginLine, string tooltip, FileSegmentGroup metaArea)
 			: base(name, offset, format, address, value, length, pluginLine, tooltip, metaArea)

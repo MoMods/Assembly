@@ -13,6 +13,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private uint _offset;
 		private string _tooltip;
 
+		// empty constructor to be used for serialization/deserialization
+		public ValueField()
+		{
+		}
+
 		public ValueField(string name, uint offset, long address, uint pluginLine, string tooltip)
 		{
 			_name = name;

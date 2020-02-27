@@ -7,6 +7,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private Trie _autocompleteTrie;
 		private string _value;
 
+		// empty constructor to be used for serialization/deserialization
+		public StringIDData() : base()
+		{
+		}
+
 		public StringIDData(string name, uint offset, long address, string val, Trie autocompleteTrie, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{

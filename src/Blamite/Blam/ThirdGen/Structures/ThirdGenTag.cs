@@ -6,6 +6,11 @@ namespace Blamite.Blam.ThirdGen.Structures
 {
 	public class ThirdGenTag : ITag
 	{
+		// empty constructor to be used for serialization/deserialization
+		public ThirdGenTag()
+		{
+		}
+
 		public ThirdGenTag(DatumIndex index, ITagGroup tagGroup, SegmentPointer metaLocation)
 		{
 			Index = index;

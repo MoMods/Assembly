@@ -15,6 +15,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private int _length;
 		internal FileSegmentGroup _metaArea;
 
+		// empty constructor to be used for serialization/deserialization
+		public RawData() : base()
+		{
+		}
+
 		public RawData(string name, uint offset, long address, string value, int length, uint pluginLine, string tooltip, FileSegmentGroup metaArea)
 			: base(name, offset, address, pluginLine, tooltip)
 		{

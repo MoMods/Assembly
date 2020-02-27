@@ -1,8 +1,12 @@
-﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿using Assembly.Helpers.Converters;
+using Newtonsoft.Json;
+
+namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	/// <summary>
 	///     Base class for meta field data.
 	/// </summary>
+	//[JsonConverter(typeof(MetaFieldConverter))]
 	public abstract class MetaField : PropertyChangeNotifier
 	{
 		private float _opacity = 1.0f;

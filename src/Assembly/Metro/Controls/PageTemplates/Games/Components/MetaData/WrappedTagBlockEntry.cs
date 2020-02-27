@@ -11,6 +11,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private bool _last;
 		private MetaField _wrappedField;
 
+		// empty constructor to be used for serialization/deserialization
+		public WrappedTagBlockEntry()
+		{
+		}
+
 		public WrappedTagBlockEntry(ObservableCollection<MetaField> visibleItems, int index, double width, bool last)
 		{
 			_index = index;

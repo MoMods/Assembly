@@ -11,6 +11,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 		private string _type;
 		private T _min, _max;
 
+		// empty constructor to be used for serialization/deserialization
+		public RangeNumberData() : base()
+		{
+		}
+
 		public RangeNumberData(string name, uint offset, long address, string type, T min, T max, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
@@ -56,6 +61,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeUint16Data : RangeNumberData<ushort>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public RangeUint16Data() : base()
+		{
+		}
+
 		public RangeUint16Data(string name, uint offset, long address, string type, ushort min, ushort max, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, min, max, pluginLine, tooltip)
 		{
@@ -77,6 +87,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	/// </summary>
 	public class RangeFloat32Data : RangeNumberData<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public RangeFloat32Data() : base()
+		{
+		}
+
 		public RangeFloat32Data(string name, uint offset, long address, string type, float min, float max, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, min, max, pluginLine, tooltip)
 		{
@@ -100,6 +115,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _type;
 		private float _radianmin, _radianmax;
+
+		// empty constructor to be used for serialization/deserialization
+		public RangeDegreeData() : base()
+		{
+		}
 
 		public RangeDegreeData(string name, uint offset, long address, string type, float min, float max, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, min, max, pluginLine, tooltip)

@@ -1,8 +1,15 @@
-﻿namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
+﻿using Ceras;
+
+namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
 	public class CommentData : MetaField
 	{
 		private string _name, _text;
+
+		// empty constructor to be used for serialization/deserialization
+		public CommentData()
+		{
+		}
 
 		public CommentData(string name, string text, uint pluginLine)
 		{

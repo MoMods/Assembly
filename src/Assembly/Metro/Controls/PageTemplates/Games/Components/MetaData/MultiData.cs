@@ -6,7 +6,12 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _type;
 		internal T _a, _b;
-		
+
+		// empty constructor to be used for serialization/deserialization
+		public Multi2Data() : base()
+		{
+		}
+
 		public Multi2Data(string name, uint offset, long address, string type, T a, T b, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
 		{
@@ -51,6 +56,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _type;
 		internal T _a, _b, _c;
+
+		// empty constructor to be used for serialization/deserialization
+		public Multi3Data() : base()
+		{
+		}
 
 		public Multi3Data(string name, uint offset, long address, string type, T a, T b, T c, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
@@ -107,6 +117,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _type;
 		internal T _a, _b, _c, _d;
+
+		// empty constructor to be used for serialization/deserialization
+		public Multi4Data() : base()
+		{
+		}
 
 		public Multi4Data(string name, uint offset, long address, string type, T a, T b, T c, T d, uint pluginLine, string tooltip)
 			: base(name, offset, address, pluginLine, tooltip)
@@ -171,6 +186,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Degree2Data : Multi2Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Degree2Data() : base()
+		{
+		}
+
 		public Degree2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, pluginLine, tooltip)
 		{
@@ -231,6 +251,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Degree3Data : Multi3Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Degree3Data() : base()
+		{
+		}
+
 		public Degree3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
@@ -312,6 +337,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector2Data : Multi2Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Vector2Data() : base()
+		{
+		}
+
 		public Vector2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, pluginLine, tooltip)
 		{
@@ -330,6 +360,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector3Data : Multi3Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Vector3Data() : base()
+		{
+		}
+
 		public Vector3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
@@ -348,6 +383,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Vector4Data : Multi4Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Vector4Data() : base()
+		{
+		}
+
 		public Vector4Data(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
@@ -366,6 +406,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Point2Data : Multi2Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Point2Data() : base()
+		{
+		}
+
 		public Point2Data(string name, uint offset, long address, string type, float a, float b, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, pluginLine, tooltip)
 		{
@@ -384,6 +429,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Point3Data : Multi3Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Point3Data() : base()
+		{
+		}
+
 		public Point3Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
@@ -402,6 +452,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Plane2Data : Multi3Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Plane2Data() : base()
+		{
+		}
+
 		public Plane2Data(string name, uint offset, long address, string type, float a, float b, float c, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, pluginLine, tooltip)
 		{
@@ -420,6 +475,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Plane3Data : Multi4Data<float>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Plane3Data() : base()
+		{
+		}
+
 		public Plane3Data(string name, uint offset, long address, string type, float a, float b, float c, float d, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
@@ -438,6 +498,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class RectangleData : Multi4Data<short>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public RectangleData() : base()
+		{
+		}
+
 		public RectangleData(string name, uint offset, long address, string type, short a, short b, short c, short d, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
@@ -456,6 +521,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Quaternion16Data : Multi4Data<short>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Quaternion16Data() : base()
+		{
+		}
+
 		public Quaternion16Data(string name, uint offset, long address, string type, short a, short b, short c, short d, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, c, d, pluginLine, tooltip)
 		{
@@ -474,6 +544,11 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 
 	public class Point16Data : Multi2Data<short>
 	{
+		// empty constructor to be used for serialization/deserialization
+		public Point16Data() : base()
+		{
+		}
+
 		public Point16Data(string name, uint offset, long address, string type, short a, short b, uint pluginLine, string tooltip)
 			: base(name, offset, address, type, a, b, pluginLine, tooltip)
 		{
