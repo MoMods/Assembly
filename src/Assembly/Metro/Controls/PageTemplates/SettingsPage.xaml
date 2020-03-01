@@ -4,7 +4,7 @@
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 mc:Ignorable="d"
+             mc:Ignorable="d"
 			 Background="#28282b"
 			 d:DesignHeight="1200" d:DesignWidth="1400">
 	<UserControl.Resources>
@@ -113,7 +113,43 @@
 			</ThicknessAnimationUsingKeyFrames>
 		</Storyboard>
 
-		<!-- Plugins -->
+        <!-- Database Settings -->
+        <Storyboard x:Key="ShowDatabaseSettingsTab">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+										   Storyboard.TargetName="DatabaseSettingsPanel">
+                <EasingDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="1" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+										   Storyboard.TargetName="DatabaseSettingsPanel">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.0" Value="{x:Static Visibility.Visible}" />
+            </ObjectAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)"
+											  Storyboard.TargetName="DatabaseSettingsPanel">
+                <EasingThicknessKeyFrame KeyTime="0" Value="-30,0,0,0" />
+                <EasingThicknessKeyFrame KeyTime="0:0:0.4" Value="30,0,0,0" />
+            </ThicknessAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="HideDatabaseSettingsTab">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
+										   Storyboard.TargetName="DatabaseSettingsPanel">
+                <EasingDoubleKeyFrame KeyTime="0" Value="1" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="0" />
+            </DoubleAnimationUsingKeyFrames>
+            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)"
+										   Storyboard.TargetName="DatabaseSettingsPanel">
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.4" Value="{x:Static Visibility.Visible}" />
+                <DiscreteObjectKeyFrame KeyTime="0:0:0.5" Value="{x:Static Visibility.Collapsed}" />
+            </ObjectAnimationUsingKeyFrames>
+            <ThicknessAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Margin)"
+											  Storyboard.TargetName="DatabaseSettingsPanel">
+                <EasingThicknessKeyFrame KeyTime="0" Value="30,0,0,0" />
+                <EasingThicknessKeyFrame KeyTime="0:0:0.4" Value="-30,0,0,0" />
+            </ThicknessAnimationUsingKeyFrames>
+        </Storyboard>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+
+        <!-- Plugins -->
 		<Storyboard x:Key="ShowPluginsTab">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)"
 										   Storyboard.TargetName="StartPageSettingsPanel">
@@ -252,6 +288,9 @@
 				<ToggleButton x:Name="ButtonSelectMapEdit" Content="Map Editor" Margin="0,0,0,0" HorizontalAlignment="Left"
 							  Style="{DynamicResource ToggleTabChoser}"
 							  Tag="MapEdit" Click="ButtonTabSelection_OnClick" />
+                <ToggleButton x:Name="ButtonSelectDatabaseSettings" Content="Database Settings" Margin="0,0,0,0" HorizontalAlignment="Left"
+							  Style="{DynamicResource ToggleTabChoser}"
+							  Tag="DatabaseSettings" Click="ButtonTabSelection_OnClick" />
 				<ToggleButton x:Name="ButtonSelectStartPage" Content="Start Page" Margin="0,0,0,0" HorizontalAlignment="Left"
 							  Style="{DynamicResource ToggleTabChoser}"
 							  Tag="StartPage" Click="ButtonTabSelection_OnClick" />
@@ -573,7 +612,424 @@
 				</StackPanel>
 			</Grid>
 
-			<Grid x:Name="PluginsSettingsPanel" Visibility="Collapsed">
+            <Grid x:Name="DatabaseSettingsPanel" Visibility="Collapsed">
+                
+                <StackPanel Margin="25,40,0,0">
+                    <TextBlock Text="database settings" Style="{DynamicResource SettingPageTitle}" />
+                    
+                    <Grid Style="{DynamicResource SettingEntry}">
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="20" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Map Backup Path -->
+                        
+                        <StackPanel Grid.Column="0">
+                            <TextBlock Text="Map Backup Path:" Style="{DynamicResource SettingName}" />
+                            <TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+								The path to where your .map files are backed-up to before syncing begins. This is an optional but recommended setting.
+                            </TextBlock>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" Grid.Column="2">
+                            <TextBox HorizontalAlignment="Left" Width="250" IsReadOnly="True" Text="{Binding Path=DatabaseSettings.MapBackupPath, Mode=TwoWay}"/>
+                            <Button Margin="20,0,0,0" Width="75" HorizontalAlignment="Left" Content="Browse..." 
+                                    Command="{Binding Path=DatabaseSettings.SelectBackupPathCommand}"
+                                    CommandParameter="{Binding}"/> 
+                        </StackPanel>
+                        
+                    </Grid>
+                    
+                    <Grid Style="{DynamicResource SettingEntry}">
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="235" />
+                            <ColumnDefinition Width="105" />
+                            <ColumnDefinition Width="70" />
+                            <ColumnDefinition Width="10" />
+                            <ColumnDefinition Width="65" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="10" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- Timestamp Cache -->
+                        
+                        <StackPanel Grid.Column="0" Grid.RowSpan="2">
+                            <TextBlock Text="Timestamp Cache:" Style="{DynamicResource SettingName}" />
+                            <TextBlock TextWrapping="Wrap" Style="{DynamicResource SettingDescription}">
+								The database connection to which timestamps for each map and tag are stored.
+                            </TextBlock>
+                        </StackPanel>
+                        
+                        <!-- Timestamp Cache: Database Type Selector -->
+
+                        <ComboBox x:Name="TimestampDBType" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+								  Width="70" IsEnabled="True" ToolTip="Database provider"
+                                  ItemsSource="{Binding Path=DatabaseSettings.DatabaseTypes}"
+                                  SelectedValue="{Binding Path=DatabaseSettings.TimestampCache.DatabaseType}"/>
+
+                        <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="85,0,0,0"
+                                Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text="://"/>
+                            <TextBlock Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"
+                                   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text=":"/>
+                        </StackPanel>
+
+                        <!-- Timestamp Cache: Password Key -->
+
+                        <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="110,0,0,0"
+                                 Width="100" ToolTip="Password key" Text="{Binding Path=DatabaseSettings.TimestampCache.PasswordKey, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="215,0,0,0"
+                                   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text="@"/>
+
+                        <!-- Timestamp Cache: Host -->
+
+                        <TextBox Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0"
+                                 Width="100" ToolTip="Host" Text="{Binding Path=DatabaseSettings.TimestampCache.Host, Mode=TwoWay}"/>
+
+                        <TextBlock Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0"
+                                   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text=":"/>
+
+                        <!-- Timestamp Cache: Port -->
+
+                        <TextBox Grid.Column="3" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="7,0,0,0"
+                                 Width="60" ToolTip="Port" Text="{Binding Path=DatabaseSettings.TimestampCache.Port, Mode=TwoWay}"/>
+                        <TextBlock Grid.Column="4" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="2,0,0,0"
+                                   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text="/"/>
+
+                        <!-- Timestamp Cache: Database Name -->
+
+                        <TextBox Grid.Column="5" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="4,0,0,0"
+                                 Width="60" ToolTip="Database name" Text="{Binding Path=DatabaseSettings.TimestampCache.Database}"/>
+
+                        <!-- Timestamp Cache: Show/Hide Advanced Settings Command -->
+
+                        <ToggleButton Grid.Column="9" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0" 
+                                Width="20" ToolTip="Advanced settings" IsChecked="False"
+                                Command="{Binding Path=DatabaseSettings.ShowHideSettingsCommand}"
+                                CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}">
+                            <Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
+                        </ToggleButton>
+
+                        <!-- Timestamp Cache: Select Config Path Command -->
+
+                        <Button Grid.Column="2" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,0,0"
+                                Width="75" Content="Config" ToolTip="Select config file path" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding Path=DatabaseSettings.SelectConfigPathCommand}"
+                                CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,0,0"
+								 Width="250" IsReadOnly="True" ToolTip="Config path" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                 Text="{Binding Path=DatabaseSettings.TimestampCache.ConfigPath, Mode=TwoWay}"/>
+
+                        <!-- Timestamp Cache: Start Server Command -->
+
+                        <Button Grid.Column="3" Grid.Row="1" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="40,10,5,0" 
+                                Width="50" Content="Start" ToolTip="Start server" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding Path=DatabaseSettings.StartServerCommand}"
+                                CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+
+                        <!-- Timestamp Cache: Kill Server Command -->
+
+                        <Button Grid.Column="5" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="15,10,0,0" 
+                                Width="50" Content="Kill" ToolTip="Kill server" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding Path=DatabaseSettings.KillServerCommand}"
+                                CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+
+                        <!-- Timestamp Cache: Select Database Path Command -->
+                                               
+                        <Button Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" 
+                                Width="75" Content="Database" ToolTip="Select database path" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding Path=DatabaseSettings.SelectDatabasePathCommand}"
+                                CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+                        <TextBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0"
+								 Width="250" IsReadOnly="True" ToolTip="Database path" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                 Text="{Binding Path=DatabaseSettings.TimestampCache.DatabasePath, Mode=TwoWay}"/>
+                        
+                        <!-- Timestamp Cache: Save Database Command -->
+                        
+                        <Button Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="90,10,0,0" 
+                                Width="50" Content="Save" ToolTip="Save database" Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                Command="{Binding Path=DatabaseSettings.SaveDatabaseCommand}"
+                                CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+
+                        <StackPanel Grid.Column="3" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+
+                            <!-- Timestamp Cache: Test Connection Command -->
+
+                            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Margin="40,10,5,0" Content="Test" ToolTip="Test connection"
+                                    Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                    Command="{Binding Path=DatabaseSettings.TestConnectionCommand}"
+                                    CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+
+                            <!-- Timestamp Cache: Wipe Database Command -->
+
+                            <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Margin="0,10,0,0" Content="Empty" ToolTip="Delete database contents"
+                                    Visibility="{Binding Path=DatabaseSettings.TimestampCache.IsHidden, Converter={StaticResource BoolToVis}}"
+                                    Command="{Binding Path=DatabaseSettings.WipeDatabaseCommand}"
+                                    CommandParameter="{Binding Path=DatabaseSettings.TimestampCache}"/>
+                        </StackPanel>
+
+                    </Grid>
+                    
+                    <Grid Style="{DynamicResource SettingEntry}">
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="44" />
+                            <RowDefinition Height="60" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        
+                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="key modifiers" Style="{DynamicResource SettingPageSubTitle}" />
+
+                        <Grid Grid.Column="1" Grid.ColumnSpan="3" Grid.RowSpan="3">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="120" />
+                                <ColumnDefinition Width="50" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="50" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <!-- KeyModifier Add Key Command -->
+
+                            <TextBox Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,20,0,0"
+									 Width="100" Text="{Binding Path=DatabaseSettings.TextBoxInput}"/>
+                            <Button Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Margin="0,20,0,0" Content="Add" ToolTip="Add new key"
+                                    Command="{Binding Path=DatabaseSettings.AddKeyCommand}"
+                                    CommandParameter="{Binding Path=DatabaseSettings.TextBoxInput}"/>
+
+                            <!-- KeyModifier Remove Key Command -->
+
+                            <ComboBox Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0"
+									  Width="100" IsEnabled="True" ItemsSource="{Binding Path=DatabaseSettings.KeyModifiers}"
+                                      SelectedValue="{Binding Path=DatabaseSettings.SelectedKey}"/>
+                            <Button Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Margin="0,0,0,0" Content="Delete" ToolTip="Delete this key"
+                                    Command="{Binding Path=DatabaseSettings.RemoveKeyCommand}"
+                                    CommandParameter="{Binding Path=DatabaseSettings.SelectedKey}"/>
+
+                            <!-- KeyModifier Clear Keys Command -->
+
+                            <Button Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" Width="50" Margin="0,0,0,0" Content="Empty" ToolTip="Delete all keys"
+                                    Command="{Binding Path=DatabaseSettings.ClearKeysCommand}"
+                                    CommandParameter="{Binding Path=DatabaseSettings.KeyModifiers}"/>
+
+                        </Grid>
+                        
+                    </Grid>
+
+                    <Grid Style="{DynamicResource SettingEntry}">
+                        
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="200" />
+                            <ColumnDefinition Width="500" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="44" />
+                            <RowDefinition Height="300" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="connections" Style="{DynamicResource SettingPageSubTitle}" />
+
+                        <!-- Connections: Add New Database Command -->
+
+                        <Button Grid.Column="1" Grid.Row="0" VerticalAlignment="Top" Margin="90,8,0,0" Width="50" Content="New" ToolTip="Add new connection"
+                                Command="{Binding Path=DatabaseSettings.AddConnectionCommand}"
+                                CommandParameter="{Binding}"/>
+
+                        <ScrollViewer Grid.Column="1" Grid.Row="1" Grid.ColumnSpan="2" VerticalScrollBarVisibility="Visible" >
+                            <ItemsControl x:Name="ConnectionList" ItemsSource="{Binding Path=DatabaseSettings.Connections}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50" />
+                                                <ColumnDefinition Width="235" />
+                                                <ColumnDefinition Width="105" />
+                                                <ColumnDefinition Width="70" />
+                                                <ColumnDefinition Width="10" />
+                                                <ColumnDefinition Width="65" />
+                                                <ColumnDefinition Width="65" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="30" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="Auto" />
+                                                <RowDefinition Height="10" />
+                                                <RowDefinition Height="*" />
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Connections: Remove Database Command -->
+
+                                            <Button Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0,0,0,0" 
+                                                    Width="50" Content="Delete" ToolTip="Delete connection"
+													Command="{Binding ElementName=ConnectionList, Path=DataContext.DatabaseSettings.RemoveConnectionCommand}"
+                                                    CommandParameter="{Binding}"/>
+
+                                            <!-- Connections: Name -->
+
+                                            <TextBox Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10,0,0,0"
+													 Width="100" ToolTip="Connection name" Text="{Binding Path=Name, Mode=TwoWay}" />
+
+                                            <!-- Connections: Database Type Selector -->
+
+                                            <ComboBox x:Name="TimestampDBType" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="120,0,0,0"
+													  Width="70" IsEnabled="True" ToolTip="Database provider"
+													  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, 
+													  Path=DataContext.DatabaseSettings.DatabaseTypes}"
+													  SelectedValue="{Binding Path=DatabaseType}"/>
+
+                                            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                                                <TextBlock Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="195,0,0,0"
+														   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text="://"/>
+                                                <TextBlock Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"
+														   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text=":"/>
+                                            </StackPanel>
+
+                                            <!-- Connections: Password Key-->
+
+                                            <TextBox Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="220,0,0,0"
+													 Width="100" ToolTip="Password key" Text="{Binding Path=PasswordKey, Mode=TwoWay}"/>
+                                            <TextBlock Grid.Column="2" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="90,0,0,0"
+													   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text="@"/>
+
+                                            <!-- Connections: Host -->
+
+                                            <TextBox Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="3" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5,0,0,0"
+													 Width="100" ToolTip="Host" Text="{Binding Path=Host, Mode=TwoWay}"/>
+                                            <TextBlock Grid.Column="5" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="30,0,0,0"
+													   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text=":"/>
+
+                                            <!-- Connections: Port -->
+
+                                            <TextBox Grid.Column="5" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="37,0,0,0"
+													 Width="60" ToolTip="Port" Text="{Binding Path=Port, Mode=TwoWay}"/>
+                                            <TextBlock Grid.Column="6" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="37,0,0,0"
+													   Style="{DynamicResource SettingDescription}" TextWrapping="Wrap" FontSize="14" Text="/"/>
+
+                                            <!-- Connections: Database Name -->
+
+                                            <TextBox Grid.Column="6" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="47,0,0,0"
+													 Width="60" ToolTip="Database name" Text="{Binding Path=Database, Mode=TwoWay}"/>
+
+                                            <!-- Connections: Show/Hide Advanced Settings Command -->
+
+                                            <ToggleButton Grid.Column="9" Grid.Row="0" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="50,0,0,0" 
+                                                    Width="20" ToolTip="Advanced settings" IsChecked="False"
+                                                    Command="{Binding ElementName=ConnectionList, Path=DataContext.DatabaseSettings.ShowHideSettingsCommand}"
+                                                    CommandParameter="{Binding}">
+                                                <Path VerticalAlignment="Center" Margin="2" Fill="#989898" Style="{StaticResource GearIcon}" />
+                                            </ToggleButton>
+
+                                            <!-- Connections: Select Config Path Command -->
+
+                                            <Button Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,0,0" 
+                                                    Width="75" Content="Config" ToolTip="Select config file path" Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}},
+													Path=DataContext.DatabaseSettings.SelectConfigPathCommand}"
+                                                    CommandParameter="{Binding}"/>
+                                            <TextBox Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10,10,0,0"
+                                                     Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}" ToolTip="Config path"
+													 Width="250" IsReadOnly="True" Text="{Binding Path=ConfigPath, Mode=TwoWay}"/>
+
+                                            <!-- Connections: Start Server Command -->
+
+                                            <Button Grid.Column="5" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="65,10,0,0" 
+                                                    Width="50" Content="Start" ToolTip="Start server" Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}, 
+													Path=DataContext.DatabaseSettings.StartServerCommand}"
+                                                    CommandParameter="{Binding}"/>
+
+                                            <!-- Connections: Kill Server Command -->
+
+                                            <Button Grid.Column="6" Grid.Row="1" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="55,10,0,0" 
+                                                    Width="50" Content="Kill" ToolTip="Kill server" Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}"
+                                                    Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}},
+													Path=DataContext.DatabaseSettings.KillServerCommand}"
+                                                    CommandParameter="{Binding}"/>
+                                            
+                                            <!-- Connections: Select Database Path Command -->
+                                           
+                                            <Button Grid.Column="2" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" 
+													Width="75" Content="Database" ToolTip="Select database path"
+                                                    Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}"
+													Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}},
+													Path=DataContext.DatabaseSettings.SelectDatabasePathCommand}"
+													CommandParameter="{Binding}"/>
+                                            <TextBox Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" ToolTip="Database path"
+													 Width="250" IsReadOnly="True" Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}"
+													 Text="{Binding Path=DatabasePath, Mode=TwoWay}"/>
+                                            
+                                            <!-- Connections: Save Database Command -->
+
+                                            <Button Grid.Column="2" Grid.Row="2" Grid.ColumnSpan="2" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="90,10,0,0" 
+													Width="50" Content="Save" ToolTip="Save database" Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}"
+													Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}},
+													Path=DataContext.DatabaseSettings.SaveDatabaseCommand}"
+													CommandParameter="{Binding}"/>
+
+                                            <StackPanel Grid.Column="5" Grid.Row="2" Grid.ColumnSpan="3" Orientation="Horizontal">
+
+                                                <!-- Connections: Test Connection Command -->
+
+                                                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Margin="65,10,5,0" Content="Test"
+                                                        Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}" ToolTip="Test connection"
+														Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}},
+														Path=DataContext.DatabaseSettings.TestConnectionCommand}"
+														CommandParameter="{Binding}"/>				
+
+                                                <!-- Connections: Wipe Database Command -->
+
+                                                <Button HorizontalAlignment="Left" VerticalAlignment="Top" Width="50" Margin="0,10,0,0" Content="Empty"
+                                                        Visibility="{Binding Path=IsHidden, Converter={StaticResource BoolToVis}}" ToolTip="Delete database contents"
+														Command="{Binding RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}},
+														Path=DataContext.DatabaseSettings.WipeDatabaseCommand}"
+														CommandParameter="{Binding}"/>
+                                            </StackPanel>
+
+                                        </Grid>
+                                        
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        
+                    </Grid>
+                    
+                </StackPanel>
+                
+            </Grid>
+
+            <Grid x:Name="PluginsSettingsPanel" Visibility="Collapsed">
 				<StackPanel Margin="25,40,0,0">
 					<TextBlock Text="plugins" Style="{DynamicResource SettingPageTitle}" />
 
