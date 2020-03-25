@@ -29,10 +29,17 @@ using Blamite.RTE.H2Vista;
 using Blamite.Util;
 using CloseableTabItemDemo;
 using Microsoft.Win32;
+using forms = System.Windows.Forms;
 using Newtonsoft.Json;
 using XBDMCommunicator;
 using Blamite.Blam.ThirdGen;
 using Blamite.RTE.MCC;
+using Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData;
+using StackExchange.Redis;
+using Assembly.Helpers.Models;
+using Ceras;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games
 {
@@ -112,6 +119,49 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			initalLoadBackgroundWorker.RunWorkerCompleted += BackgroundWorker_RunWorkerCompleted;
 
 			initalLoadBackgroundWorker.RunWorkerAsync();
+		}
+
+		/// <summary>
+		/// Opens HaloMap .cache file for parallel read / write access.
+		/// This is used by the Database tool methods.
+		/// </summary>
+		/// <param name="cacheLocation"></param>
+		/// <param name="tab"></param>
+		/// <param name="tagSorting"></param>
+		/// <param name="initMap">Whether or not to initialize the map</param>
+		public HaloMap(string cacheLocation, LayoutDocument tab, Settings.TagSort tagSorting, bool initMap)
+		{
+			InitializeComponent();
+			AddHandler(CloseableTabItem.CloseTabEvent, new RoutedEventHandler(CloseTab));
+
+			// Setup Context Menus
+			InitalizeContextMenus();
+
+			_tab = tab;
+			_tagSorting = tagSorting;
+			_cacheLocation = cacheLocation;
+
+			// Update dockpanel location
+			UpdateDockPanelLocation();
+
+			// Show UI Pending Stuff
+			doingAction.Visibility = Visibility.Visible;
+
+			tabScripts.Visibility = Visibility.Collapsed;
+
+			// Read Settings
+			cbShowEmptyTags.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapShowEmptyClasses;
+			cbShowBookmarkedTagsOnly.IsChecked = App.AssemblyStorage.AssemblySettings.HalomapOnlyShowBookmarkedTags;
+			cbOpenDuplicate.IsChecked = App.AssemblyStorage.AssemblySettings.AutoOpenDuplicates;
+			cbTabOpenMode.SelectedIndex = (int)App.AssemblyStorage.AssemblySettings.HalomapTagOpenMode;
+			cbShowHSInfo.IsChecked = App.AssemblyStorage.AssemblySettings.ShowScriptInfo;
+
+			App.AssemblyStorage.AssemblySettings.PropertyChanged += SettingsChanged;
+
+			if (initMap)
+			{
+				ParallelInitalizeMap();
+			}
 		}
 
 		public ObservableCollection<HeaderValue> HeaderDetails
@@ -258,6 +308,94 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}
 		}
 
+		/// <summary>
+		/// Initialized the map for parallel read / write access.
+		/// This is used by the DatabaseTool methods.
+		/// </summary>
+		public void ParallelInitalizeMap()
+		{
+			using (FileStream fileStream = File.Open(_cacheLocation, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+			{
+				var reader = new EndianReader(fileStream, Endian.BigEndian);
+#if DEBUG
+				_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+					out _buildInfo);
+#else
+				try
+				{
+					_cacheFile = CacheFileLoader.LoadCacheFile(reader, App.AssemblyStorage.AssemblySettings.DefaultDatabase,
+						out _buildInfo);
+				}
+				catch (Exception ex)
+				{
+					Dispatcher.Invoke(new Action(delegate
+					{
+
+						if (ex is NotSupportedException)
+						{
+							StatusUpdater.Update("Not a supported target engine");
+							MetroMessageBox.Show("Unable to open cache file",
+								ex.Message + ".\r\nWhy not add support in the 'Formats' folder?");
+						}
+						else
+						{
+							StatusUpdater.Update("An unknown error occured. Cache file may be corrupted.");
+							throw ex;
+						}
+
+						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(_tab);
+					}));
+					return;
+				}
+#endif
+
+				_mapManager = new FileStreamManager(_cacheLocation, reader.Endianness);
+
+				// Build SID trie
+				_stringIdTrie = new Trie();
+				if (_cacheFile.StringIDs != null)
+					_stringIdTrie.AddRange(_cacheFile.StringIDs);
+
+				Dispatcher.Invoke(new Action(delegate
+				{
+					if (App.AssemblyStorage.AssemblySettings.StartpageHideOnLaunch)
+						App.AssemblyStorage.AssemblySettings.HomeWindow.ExternalTabClose(Home.TabGenre.StartPage);
+				}));
+
+				// Set up RTE
+				switch (_cacheFile.Engine)
+				{
+					case EngineType.SecondGeneration:
+						_rteProvider = new H2VistaRTEProvider(_buildInfo);
+						break;
+
+					case EngineType.ThirdGeneration:
+						if (_cacheFile.Endianness == Endian.BigEndian)
+							_rteProvider = new XBDMRTEProvider(App.AssemblyStorage.AssemblySettings.Xbdm);
+						else
+							_rteProvider = new MCCRTEProvider(_buildInfo);
+						break;
+				}
+
+				Dispatcher.Invoke(new Action(() => StatusUpdater.Update("Loaded Cache File")));
+
+				// Add to Recents
+				Dispatcher.Invoke(new Action(delegate
+				{
+					RecentFiles.AddNewEntry(Path.GetFileName(_cacheLocation), _cacheLocation,
+						_buildInfo.Settings.GetSetting<string>("shortName"), Settings.RecentFileType.Cache);
+					StatusUpdater.Update("Added To Recents");
+				}));
+
+				App.AssemblyStorage.AssemblyNetworkPoke.Maps.Add(new Tuple<ICacheFile, IRTEProvider>(_cacheFile, _rteProvider));
+
+				LoadHeader();
+				LoadTags();
+				LoadLocales();
+				LoadScripts();
+			}
+		}
+
 		private void LoadHeader()
 		{
 			Dispatcher.Invoke(new Action(delegate
@@ -351,7 +489,7 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			}));
 		}
 
-		private void LoadTags()
+		public void LoadTags()
 		{
 			if (_cacheFile.TagGroups.Count == 0)
 			{
@@ -378,7 +516,43 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			UpdateTagFilter();
 		}
 
-		private TagHierarchy BuildTagHierarchy(Func<TagGroup, bool> groupFilter, Func<TagEntry, bool> tagFilter)
+        // Public variables to be used by database tool
+
+        #region DatabaseTool
+
+		public TagHierarchy AllTags
+		{
+			get { return _allTags; }
+			set { _allTags = value; }
+		}
+
+		public EngineDescription BuildInfo
+		{
+			get { return _buildInfo; }
+			set { _buildInfo = value; }
+		}
+
+		public ICacheFile CacheFile
+		{
+			get { return _cacheFile; }
+			set { _cacheFile = value; }
+		}
+
+		public IStreamManager MapManager
+		{
+			get { return _mapManager; }
+			set { _mapManager = value; }
+		}
+
+		public Trie StringIdTrie
+		{
+			get { return _stringIdTrie; }
+			set { _stringIdTrie = value; }
+		}
+
+        #endregion
+
+        private TagHierarchy BuildTagHierarchy(Func<TagGroup, bool> groupFilter, Func<TagEntry, bool> tagFilter)
 		{
 			// Build a dictionary of tag groups
 			var groupWrappers = new Dictionary<ITagGroup, TagGroup>();
@@ -757,6 +931,59 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				container.Resources.Count + " resource pointer(s).");
 		}
 
+		private void extractTagsToTextFile(IList<TagEntry> tags)
+		{
+			IList<Tuple<string, string>> tagMetaList = new List<Tuple<string, string>>();
+
+			var sf = new forms.FolderBrowserDialog();
+			forms.DialogResult result = sf.ShowDialog();
+			if (result == forms.DialogResult.OK)
+			{
+				string folderName = sf.SelectedPath;
+
+				foreach (TagEntry tag in tags)
+				{
+					IList<MetaField> tagMeta = ExtractTag(tag).Item1;
+					MetaSerializer metaSerializer = new MetaSerializer(tagMeta);
+					string serializedResult = metaSerializer.JavaScriptMetaSerializer();
+
+					string tagName = tag.GroupName.ToString() + "_" + tag.TagFileName.ToString().Replace("\\", "_");
+					Tuple<string, string> tagData = new Tuple<string, string>(tagName, serializedResult);
+					tagMetaList.Add(tagData);
+				}
+
+				foreach (var tagMeta in tagMetaList)
+				{
+					var path = Path.Combine(folderName, tagMeta.Item1);
+					using (StreamWriter file = File.CreateText($@"{ path }.txt"))
+					{
+						file.Write(tagMeta.Item2);
+					}
+				}
+			}
+
+			MetroMessageBox.Show("Extraction Successful", "Extracted " + tagMetaList.Count + " tag(s).");
+		}
+
+		public void extractTagsToDatabase(List<TagEntry> tags)
+		{
+			var redis = RedisConnectionConfig();
+			IDatabase db = redis.GetDatabase();
+
+			var ceras = CerasSerializerConfig();
+
+			foreach (TagEntry tag in tags)
+			{
+				(IList<MetaField>, HashSet<string>) tagMeta = ExtractTag(tag);
+				string tagName = tag.GroupName.ToString() + "_" + tag.TagFileName.ToString().Replace("\\", "_");
+				
+				var serializedMetaList = ceras.Serialize<(IList<MetaField>, HashSet<string>)>(tagMeta);
+				db.StringSet(tagName, serializedMetaList);
+			}
+
+			MetroMessageBox.Show("Extraction Successful", "Extracted " + tags.Count + " tag(s).");
+		}
+
 		private TagContainer extractTags(List<TagEntry> tags, ExtractMode mode, bool withResources, bool withPredictions)
 		{
 			// Make a tag container
@@ -1047,6 +1274,78 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 				_cacheFile.SaveChanges(stream);
 
 			MetroMessageBox.Show("Success!", "Tag names saved successfully.");
+		}
+
+		private void btnSync_Click(object sender, RoutedEventArgs e)
+		{
+			var redis = RedisConnectionConfig();
+			IDatabase db = redis.GetDatabase();
+
+			var ceras = CerasSerializerConfig();
+			//byte[] buffer = db.StringGet("achi_globals_achievements");
+
+			List<TagEntry> tags = this._allTags.Entries.Where(t => t != null).ToList();
+
+			foreach (TagEntry tag in tags)
+			{
+				string groupName = tag.GroupName.ToString();
+				string tagName = tag.TagFileName.ToString().Replace("\\", "_");
+				string tagKey = groupName + "_" + tagName;
+				
+				var serializedMetaList = db.StringGet(tagKey);
+
+				if (!serializedMetaList.IsNullOrEmpty)
+				{
+					var metaList = ceras.Deserialize<IList<MetaField>>(serializedMetaList);
+					MetaExtractor extractor = new MetaExtractor(_buildInfo, tag, _allTags, _cacheFile, _mapManager, _stringIdTrie);
+					extractor.RetrieveMeta(MetaStoreWriter.SaveType.File, metaList, false);
+				}
+			}
+
+			//string groupName = "achi";
+			//string tagName = "globals_achievements";
+
+			//var serializedMetaList = db.StringGet("achi_globals_achievements");
+			//var metaList = ceras.Deserialize<IList<MetaField>>(serializedMetaList);
+
+			//List<TagEntry> tags = this._allTags.Entries.Where(t => t != null).ToList();
+			//tags = tags.Where(t => t.GroupName == groupName && t.TagFileName.ToString().Replace("\\", "_") == tagName).ToList();
+			//TagEntry tag = tags[0];
+
+			//MetaExtractor extractor = new MetaExtractor(_buildInfo, tag, _allTags, _cacheFile, _mapManager, _stringIdTrie);
+			//extractor.RetrieveMeta(MetaStoreWriter.SaveType.File, metaList, false);
+		}
+
+		private CerasSerializer CerasSerializerConfig()
+		{
+			SerializerConfig config = new SerializerConfig();
+			config.DefaultTargets = TargetMember.AllPublic | TargetMember.AllPrivate | TargetMember.All;
+			// _metaArea is null when serialized, so exclude properties that access it to avoid a NullReferenceException
+			config.ConfigType<TagBlockData>()
+				.ConfigMember<long>(p => p.FirstElementAddress).Exclude()
+				.ConfigMember<string>(p => p.FirstElementAddressHex).Exclude();
+			config.ConfigType<RawData>()
+				.ConfigMember<long>(p => p.DataAddress).Exclude()
+				.ConfigMember<string>(p => p.DataAddressHex).Exclude();
+			config.ConfigType<DataRef>()
+				.ConfigMember<long>(p => p.DataAddress).Exclude()
+				.ConfigMember<string>(p => p.DataAddressHex).Exclude();
+			// exclude color type: value since it breaks the serializer with a NotSupportedException error due to the MarshalAs wrapper
+			config.ConfigType<ColorData>()
+				.ConfigMember<Color>(p => p.Value).Exclude();
+			// exclude enumvalue type: selectedvalue since it breaks the serializer with a NullReferenceException
+			config.ConfigType<EnumData>()
+				.ConfigMember<EnumValue>(p => p.SelectedValue).Exclude();
+
+			var ceras = new CerasSerializer(config);
+
+			return ceras;
+		}
+
+		private ConnectionMultiplexer RedisConnectionConfig()
+		{
+			ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost");
+			return redis;
 		}
 
 		private void contextDuplicate_Click(object sender, RoutedEventArgs e)
@@ -1660,6 +1959,14 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 			SelectTabFromTag(tag);
 		}
 
+		public (IList<MetaField>, HashSet<string>) ExtractTag(TagEntry tag)
+		{
+			MetaExtractor metaExtractor = new MetaExtractor(_buildInfo, tag, _allTags, _cacheFile, _mapManager, _stringIdTrie);
+			(IList<MetaField>, HashSet<string>) tagMeta = metaExtractor.StoreMeta(MetaStoreReader.LoadType.File);
+
+			return tagMeta;
+		}
+
 		private void CloseTab(object source, RoutedEventArgs args)
 		{
 			var tabItem = args.OriginalSource as TabItem;
@@ -1869,6 +2176,23 @@ namespace Assembly.Metro.Controls.PageTemplates.Games
 
 			extractTagsToFile(tags);
 		}
+
+		private void TextBatchExtract_Click(object sender, RoutedEventArgs e)
+		{
+			List<TagEntry> tags = new List<TagEntry>();
+			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
+
+			extractTagsToTextFile(tags);
+		}
+
+		public void DatabaseBatchExtract_Click(object sender, RoutedEventArgs e)
+		{
+			List<TagEntry> tags = new List<TagEntry>();
+			tags.AddRange(batchTagList.Items.Cast<TagEntry>());
+
+			extractTagsToDatabase(tags);
+		}
+
 		private void BatchClear_Click(object sender, RoutedEventArgs e)
 		{
 			batchTagList.Items.Clear();

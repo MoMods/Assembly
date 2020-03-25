@@ -190,7 +190,8 @@
 											</StackPanel>
 										</Border>
 									</Popup>
-								</StackPanel>
+                                    <Button x:Name="btnSync" Content="Sync" Width="40" Margin="5,0,5,0" Click="btnSync_Click" />
+                                </StackPanel>
 
 
 
@@ -285,8 +286,28 @@
 
 										<StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Grid.Row="2" Margin="0,5,0,0">
 											<TextBlock Text="List..." Style="{DynamicResource GenericTextblock}" VerticalAlignment="Center"/>
-											<Button Content="Extract All" Width="100" Margin="5,0,0,0" Click="BatchExtract_Click" />
-											<Button Content="Clear All" Width="72" Margin="5,0,0,0" Click="BatchClear_Click" />
+                                            <!--Button Content="Extract All" Width="100" Margin="5,0,0,0" Click="BatchExtract_Click" /-->
+                                            <ToggleButton x:Name="extractTagOptions" Width="100" Margin="5,0,0,0" IsChecked="False" Style="{DynamicResource OptionsToggleButton}">
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="75"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+
+                                                    <TextBlock Text="Extract All" Grid.Column="0" HorizontalAlignment="Center"/>
+                                                    <Path x:Name="extractTagArrow" Grid.Column="1" Data="M0,0L4,4 8,0z" Margin="5,0,2,0" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="#989898" Width="8"/>
+                                                </Grid>
+                                            </ToggleButton>
+                                            <Popup x:Name="tagExtractPopOptions" IsOpen="{Binding IsChecked, ElementName=extractTagOptions}" PlacementTarget="{x:Reference extractTagOptions}" StaysOpen="False" >
+                                                <Border BorderThickness="1" Background="#1b1b1c" BorderBrush="#333337">
+                                                    <StackPanel>
+                                                        <Button x:Name="toTagc" Content="Tag File (Default)" Foreground="White" Click="BatchExtract_Click"/>
+                                                        <Button x:Name="toTxt" Content="Text File" Foreground="White" Click="TextBatchExtract_Click"/>
+                                                        <Button x:Name="toDb" Content="Database" Foreground="White" Click="DatabaseBatchExtract_Click"/>
+                                                    </StackPanel>
+                                                </Border>
+                                            </Popup>
+                                            <Button Content="Clear All" Width="72" Margin="5,0,0,0" Click="BatchClear_Click" />
 										</StackPanel>
 
 										<TextBlock Text="Extract List:" Grid.Row="1" DockPanel.Dock="Top" Style="{DynamicResource GenericTextblock}" Margin="0,4,0,1" HorizontalAlignment="Left" VerticalAlignment="Bottom"/>
