@@ -28,6 +28,7 @@ using XboxChaos.Models;
 using XBDMCommunicator;
 using Xceed.Wpf.AvalonDock.Controls;
 using Assembly.Helpers.Net.Sockets;
+using Assembly.Helpers.Database.Views;
 
 namespace Assembly.Windows
 {
@@ -57,10 +58,10 @@ namespace Assembly.Windows
 
 			// Set width/height/state from last session
 			if (!double.IsNaN(App.AssemblyStorage.AssemblySettings.ApplicationSizeHeight) &&
-			    App.AssemblyStorage.AssemblySettings.ApplicationSizeHeight > MinHeight)
+				App.AssemblyStorage.AssemblySettings.ApplicationSizeHeight > MinHeight)
 				Height = App.AssemblyStorage.AssemblySettings.ApplicationSizeHeight;
 			if (!double.IsNaN(App.AssemblyStorage.AssemblySettings.ApplicationSizeWidth) &&
-			    App.AssemblyStorage.AssemblySettings.ApplicationSizeWidth > MinWidth)
+				App.AssemblyStorage.AssemblySettings.ApplicationSizeWidth > MinWidth)
 				Width = App.AssemblyStorage.AssemblySettings.ApplicationSizeWidth;
 
 			WindowState = App.AssemblyStorage.AssemblySettings.ApplicationSizeMaximize
@@ -240,6 +241,11 @@ namespace Assembly.Windows
 		private void menuNetworkPoking_Click(object sender, RoutedEventArgs e)
 		{
 			AddTabModule(TabGenre.NetworkPoking);
+		}
+
+		private void databaseTool_Click(object sender, RoutedEventArgs e)
+		{
+			AddDatabaseToolTabModule();
 		}
 
 		//xbdm
@@ -422,7 +428,7 @@ namespace Assembly.Windows
 
 		private static void WmGetMinMaxInfo(IntPtr hwnd, IntPtr lParam)
 		{
-			var mmi = (Monitor_Workarea.MINMAXINFO) Marshal.PtrToStructure(lParam, typeof (Monitor_Workarea.MINMAXINFO));
+			var mmi = (Monitor_Workarea.MINMAXINFO)Marshal.PtrToStructure(lParam, typeof(Monitor_Workarea.MINMAXINFO));
 
 			// Adjust the maximized size and position to fit the work area of the correct monitor
 			const int monitorDefaulttonearest = 0x00000002;
@@ -483,7 +489,7 @@ namespace Assembly.Windows
 				Filter = filter
 			};
 
-			if (!(bool) ofd.ShowDialog(this)) return;
+			if (!(bool)ofd.ShowDialog(this)) return;
 
 			foreach (string file in ofd.FileNames)
 				ProcessContentFile(file);
@@ -525,7 +531,8 @@ namespace Assembly.Windows
 			VoxelConverter,
 			PostGenerator,
 			MapNames,
-			NetworkPoking
+			NetworkPoking,
+			DatabaseTool
 		}
 
 		public void ExternalTabClose(TabGenre tabGenre)
@@ -542,7 +549,7 @@ namespace Assembly.Windows
 			}
 			LayoutDocument toRemove = null;
 			foreach (LayoutContent tab in documentManager.Children.Where(tab => tab.Title == tabHeader && tab is LayoutDocument))
-				toRemove = (LayoutDocument) tab;
+				toRemove = (LayoutDocument)tab;
 
 			if (toRemove != null)
 				documentManager.Children.Remove(toRemove);
@@ -673,6 +680,18 @@ namespace Assembly.Windows
 			documentManager.Children.Add(newPatchTab);
 			newPatchTab.Closing += PatchControl_Closing;
 			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newPatchTab);
+		}
+
+		public void AddDatabaseToolTabModule(string databaseToolLocation = null)
+		{
+			var newDatabaseToolTab = new LayoutDocument
+			{
+				Title = "Database Tool",
+				Content = (databaseToolLocation != null) ? new DatabaseTool(databaseToolLocation) : new DatabaseTool()
+			};
+			documentManager.Children.Add(newDatabaseToolTab);
+			newDatabaseToolTab.Closing += DatabaseTool_Closing;
+			documentManager.SelectedContentIndex = documentManager.IndexOfChild(newDatabaseToolTab);
 		}
 
 		private bool TabModuleFindExisting(string contentId)
@@ -921,6 +940,14 @@ namespace Assembly.Windows
 		{
 			LayoutDocument ld = (LayoutDocument)sender;
 			PatchControl mp = (PatchControl)ld.Content;
+
+			mp.Dispose();
+		}
+
+		private void DatabaseTool_Closing(object sender, CancelEventArgs e)
+		{
+			LayoutDocument ld = (LayoutDocument)sender;
+			DatabaseTool mp = (DatabaseTool)ld.Content;
 
 			mp.Dispose();
 		}
