@@ -6,9 +6,8 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Assembly.Helpers.Net;
+using Assembly.Helpers.Database.ViewModels;
 using Assembly.Helpers.Net.Sockets;
-using Assembly.Metro.Controls.PageTemplates.Games;
 using Assembly.Metro.Dialogs;
 using Assembly.Windows;
 using Blamite.Blam;
@@ -181,6 +180,7 @@ namespace Assembly.Helpers
 		private bool _shownCheatingDialog = false;
 		private bool _autoOpenDuplicates = false;
 		private bool _showScriptInfo = false;
+		private DatabaseSettingsViewModel _databaseSettings = new DatabaseSettingsViewModel();
 
 		#region Enums
 
@@ -285,6 +285,7 @@ namespace Assembly.Helpers
 			ApplicationRecents.CollectionChanged += (sender, args) => SetField(ref _applicationRecents, sender as ObservableCollection<RecentFileEntry>, "ApplicationRecents", true);
 			ImgurUploadHistory.CollectionChanged += (sender, args) => SetField(ref _imgurHistory, sender as ObservableCollection<ImgurHistoryEntry>, "ImgurUploadHistory", true);
 			HalomapResourceCachePaths.CollectionChanged += (sender, args) => SetField(ref _halomapResourceCachePaths, sender as ObservableCollection<ResourceCacheInfo>, "HalomapResourceCachePaths", true);
+			DatabaseSettings.PropertyChanged += (sender, args) => SetField(ref _databaseSettings, sender as DatabaseSettingsViewModel, "DatabaseSettings", true);
 		}
 
 		#endregion
@@ -322,6 +323,15 @@ namespace Assembly.Helpers
 		}
 
 		#endregion
+
+		public DatabaseSettingsViewModel DatabaseSettings
+		{
+			get { return _databaseSettings; }
+			set
+			{
+				SetField(ref _databaseSettings, value, "DatabaseSettings");
+			}
+		}
 
 		/// <summary>
 		///     The Accent colour the user has selected. Defaults to Assembly Blue.
