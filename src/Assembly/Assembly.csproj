@@ -44,6 +44,8 @@
     <StartupObject>Assembly.App</StartupObject>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
     <ApplicationIcon>Metro\Images\app_icon_large.ico</ApplicationIcon>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -132,6 +134,9 @@
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Ookii.Dialogs.Wpf, Version=1.0.0.0, Culture=neutral, PublicKeyToken=0c15020868fd6249, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ookii.Dialogs.1.0\lib\net35\Ookii.Dialogs.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="Pipelines.Sockets.Unofficial, Version=1.0.0.0, Culture=neutral, PublicKeyToken=42ea0a778e13fbe2, processorArchitecture=MSIL">
       <HintPath>..\packages\Pipelines.Sockets.Unofficial.2.0.22\lib\net472\Pipelines.Sockets.Unofficial.dll</HintPath>
