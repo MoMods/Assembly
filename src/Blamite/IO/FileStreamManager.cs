@@ -57,5 +57,15 @@ namespace Blamite.IO
 		{
 			return new EndianStream(_file.Open(FileMode.Open, FileAccess.ReadWrite), _endian);
 		}
+
+		/// <summary>
+		/// Opens the file for parallel reading and writing.
+		/// This is used by the DatabaseTool methods.
+		/// </summary>
+		/// <returns>The stream that was opened.</returns>
+		public IStream ParallelOpenReadWrite()
+		{
+			return new EndianStream(_file.Open(FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite), _endian);
+		}
 	}
 }

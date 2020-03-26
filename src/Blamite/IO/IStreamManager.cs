@@ -22,5 +22,12 @@
 		/// </summary>
 		/// <returns>The stream that was opened on the object.</returns>
 		IStream OpenReadWrite();
+
+		/// <summary>
+		/// Opens the file for parallel reading and writing.
+		/// This is used by the DatabaseTool methods.
+		/// </summary>
+		/// <returns>The stream that was opened.</returns>
+		IStream ParallelOpenReadWrite();
 	}
 }

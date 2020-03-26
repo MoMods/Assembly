@@ -1,5 +1,6 @@
 ﻿using Blamite.Blam;
 using Blamite.IO;
+using System;
 
 namespace Blamite.RTE
 {
@@ -29,6 +30,12 @@ namespace Blamite.RTE
 
 		public IStream OpenReadWrite()
 		{
+			return _provider.GetMetaStream(_cacheFile);
+		}
+
+		public IStream ParallelOpenReadWrite()
+		{
+			// Filler - does nothing special
 			return _provider.GetMetaStream(_cacheFile);
 		}
 	}
