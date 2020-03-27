@@ -236,6 +236,22 @@
     <Compile Include="Helpers\Cryptography\MD5.cs" />
     <Compile Include="Helpers\Cryptography\RSA.cs" />
     <Compile Include="Helpers\Cryptography\SHA1.cs" />
+    <Compile Include="Helpers\DatabaseTool\IO\IMetaStoreReader.cs" />
+    <Compile Include="Helpers\DatabaseTool\IO\MetaExtractor.cs" />
+    <Compile Include="Helpers\DatabaseTool\IO\MetaStoreReader.cs" />
+    <Compile Include="Helpers\DatabaseTool\IO\MetaStoreWriter.cs" />
+    <Compile Include="Helpers\DatabaseTool\Models\DatabaseTool.cs" />
+    <Compile Include="Helpers\DatabaseTool\Serialization\MetaSerializer.cs" />
+    <Compile Include="Helpers\DatabaseTool\ViewModels\ConnectionViewModel.cs" />
+    <Compile Include="Helpers\DatabaseTool\Models\ConnectorType.cs" />
+    <Compile Include="Helpers\DatabaseTool\ViewModels\DatabaseSettingsViewModel.cs" />
+    <Compile Include="Helpers\DatabaseTool\Models\IDatabaseConnector.cs" />
+    <Compile Include="Helpers\DatabaseTool\Models\RedisConnector.cs" />
+    <Compile Include="Helpers\DatabaseTool\Commands\RelayCommand.cs" />
+    <Compile Include="Helpers\DatabaseTool\ViewModels\DatabaseToolViewModel.cs" />
+    <Compile Include="Helpers\DatabaseTool\Views\DatabaseTool.xaml.cs" >
+      <DependentUpon>DatabaseTool.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DDSConversion.cs" />
     <Compile Include="Helpers\ExceptionDictionary.cs" />
     <Compile Include="Helpers\FileDefaults.cs" />
@@ -623,6 +639,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Helpers\0xabad1dea\TragicSans.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Helpers\DatabaseTool\Views\DatabaseTool.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
