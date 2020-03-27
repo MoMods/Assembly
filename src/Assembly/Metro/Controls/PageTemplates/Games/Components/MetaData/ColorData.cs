@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using Ceras;
+using System.Windows.Media;
 
 namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 {
@@ -9,6 +10,8 @@ namespace Assembly.Metro.Controls.PageTemplates.Games.Components.MetaData
 	{
 		private string _dataType;
 		private bool _alpha;
+		// exclude color type: _value since it breaks the serializer with a NotSupportedException error due to the MarshalAs wrapper
+		[Exclude]
 		private Color _value;
 
 		// empty constructor to be used for serialization/deserialization
